@@ -131,7 +131,8 @@ public function checkBalanceMenu($textArray){
     if($level == 1){
         echo "CON Enter PIN";
     }elseif($level == 2){
-        // Check PIN correctness etc
+        // Check PIN correctness 
+        // check balance from database
         echo "END We are processing your request, You will recieve SMS shortly";
     }
     else{
