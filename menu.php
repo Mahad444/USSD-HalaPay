@@ -7,10 +7,11 @@ class Menu {
     protected $text;
     protected $sessionId;
     
-    function __construct($text,$sessionId)
-    {}
+    function __construct($text = null, $sessionId = null)
+    {
         // $this->text = $text;
         // $this->sessionId = $sessionId;
+    }
 
 public function mainMenuRegistered(){
     // for both registered and un registered user
@@ -80,8 +81,7 @@ public function sendMoneyMenu($textArray){
          echo "1. Confirm\n";
          echo "2. Cancel\n";
          echo Util::$GO_BACK . ". Go Back\n";
-         echo Util::$GO_TO_MAIN_MENU . ". Main Menu\n"; 
-         echo $response;
+         echo Util::$GO_TO_MAIN_MENU . ". Main Menu\n";
      }else if($level == 5 && $textArray[4] == 1){
         //  confirm to send money
         // send money plus process
@@ -125,14 +125,14 @@ public function withdrawMoneyMenu($textArray){
 
     
 }
+
 // Check Balance , PIN
 public function checkBalanceMenu($textArray){
     $level = count ($textArray);
     if($level == 1){
         echo "CON Enter PIN";
     }elseif($level == 2){
-        // Check PIN correctness 
-        // check balance from database
+        // Check PIN correctness etc
         echo "END We are processing your request, You will recieve SMS shortly";
     }
     else{
@@ -140,7 +140,8 @@ public function checkBalanceMenu($textArray){
     }
         
     }
-    
+
+    // Functions of GOBACK and 98MORE
     
      public function middleware ($text){
         // remove entries for going back to the main menu
@@ -167,7 +168,7 @@ public function checkBalanceMenu($textArray){
             $explodedText = array_slice($explodedText,$fisrtIndex + 1);
         }
         
-        return join("*",$explodedText);
+        return join("*", $explodedText);
     
    }
     
@@ -185,17 +186,3 @@ public function checkBalanceMenu($textArray){
 
 
 ?>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
