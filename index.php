@@ -9,9 +9,10 @@ $serviceCode = $_POST["serviceCode"];
 $phoneNumber = $_POST["phoneNumber"];
 $text        = $_POST["text"];
 
-$isRegistered = true;
+$isRegistered = false;
 // create an object of the menu class
-$menu = new Menu($text, $sessionId);
+$menu = new Menu();
+$text = $menu->middleware($text);
 
 if ($text == "" && !$isRegistered) {
     //User is isRegistered and string is empty
