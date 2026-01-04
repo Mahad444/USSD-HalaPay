@@ -74,6 +74,7 @@ public function sendMoneyMenu($textArray){
     //     $response .= Util::$GO_BACK . "Back \n";
     //     $response .= Util::$GO_TO_MAIN_MENU . "Main Menu \n";
     //     echo $response;
+    // $response = "END You are about to send ".$textArray[2] ." to ".$textArray[1];
      else if ($level == 4){
          $recipient = $textArray[1];
          $amount = $textArray[2];
