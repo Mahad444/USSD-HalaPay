@@ -86,7 +86,7 @@ public function sendMoneyMenu($textArray){
      }else if($level == 5 && $textArray[4] == 1){
         //  confirm to send money
         // send money plus process
-        // check if PIN is correct
+        // check if PIN is correct, this is checked by network
         // if u have enough funds including charges etc...
         // after checking all the above send the money
                 echo "END You have successfully sent KES ".$textArray[2] ." to ".$textArray[1];
