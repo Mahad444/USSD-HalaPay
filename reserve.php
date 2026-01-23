@@ -160,6 +160,7 @@ public function checkBalanceMenu($textArray){
 
     public function goToMainMenu ($text){
         // 1*4*5*1*99*2*1234*99
+        // 1*4*5*1*2*1234 this means go to main menu
         $explodedText = explode("*" , $text);
         while(array_search(Util::$GO_TO_MAIN_MENU,$explodedText) != false){
             $fisrtIndex = array_search(Util::$GO_TO_MAIN_MENU,$explodedText);
