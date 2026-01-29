@@ -102,7 +102,7 @@ public function sendMoneyMenu($textArray){
          echo "END Invalid entry or MMI connection failed ";
      }
 }
-// withdrawMoney , Agent No., Amount , pin, confirm,cancel
+// withdrawMoney , Agent No., Amount , pin, confirm,cancel, GO BACK
 public function withdrawMoneyMenu($textArray){
     $level = count($textArray);
     
