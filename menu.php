@@ -97,7 +97,7 @@ public function sendMoneyMenu($textArray){
      }else if($level == 5 && $textArray[4] == Util::$GO_BACK){
          echo "END You have requested to go back to one step -PIN ";
      }else if($level == 5 && $textArray[4] == Util::$GO_TO_MAIN_MENU){
-         echo "END You have requested to go back to main menu ";
+         echo "END You have requested to GO BACK to main menu ";
      }else{
          echo "END Invalid entry or MMI connection failed ";
      }
