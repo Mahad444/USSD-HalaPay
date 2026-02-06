@@ -21,6 +21,7 @@ public function mainMenuRegistered(){
     $response .= "3. Check Balance\n";
     
 // $response = "END Check Balance\n";
+// $response = "END You have successfully Registred\n";
     
     echo $response;
     
@@ -60,7 +61,7 @@ public function registeredMenu($textArray){
 public function sendMoneyMenu($textArray){
     $level = count ($textArray);
      if ($level == 1){
-         echo "CON Enter reciepient Number:";
+         echo "CON Enter reciepient PhoneNumber:";
      }elseif($level == 2){
          echo "CON Enter Amount:";         
      }else if( $level == 3){
