@@ -52,7 +52,7 @@ public function registeredMenu($textArray){
             echo "END Your PIN does not Match. Please try again";
         }else{
             // WE can Register the user and send an SMS 
-            echo "END Congratulations You have successfully Registered";
+            echo "END Congratulations You have successfully Registered To HALAL PAY. You will receive an SMS shortly";
         }
     }
     
