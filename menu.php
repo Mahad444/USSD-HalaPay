@@ -100,7 +100,7 @@ public function sendMoneyMenu($textArray){
      }else if($level == 5 && $textArray[4] == Util::$GO_TO_MAIN_MENU){
          echo "END You have requested to GO BACK to main menu ";
      }else{
-         echo "END Invalid entry or MMI connection failed ";
+         echo "END Invalid entry or MMI connection failed, Try again later ";
      }
 }
 // withdrawMoney , Agent No., Amount , pin, confirm,cancel, GO BACK
