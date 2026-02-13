@@ -21,6 +21,7 @@ public function mainMenuRegistered(){
     $response .= "3. Check Balance\n";
     
 // $response = "END Check Balance\n";
+// check balance, send money, withdraw money, change pin, main menu, go back
 // $response = "END You have successfully Registred\n";
     
     echo $response;
