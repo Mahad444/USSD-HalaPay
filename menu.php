@@ -50,7 +50,7 @@ public function registeredMenu($textArray){
         $pin = $textArray [2];
         $confirmPin = $textArray[3];
         if ( $pin != $confirmPin ){
-            echo "END Your PIN does not Match. Please try again";
+            echo "END Your PIN does not Match. Please try again, Thank You for choosing HALAL PAY";
         }else{
             // WE can Register the user and send an SMS 
             echo "END Congratulations You have successfully Registered To HALAL PAY. You will receive an SMS shortly";
