@@ -32,7 +32,7 @@ if ($level == 0) {
 
 } else if ($level == 2 && $textArray[0] == "1") {
     // Level 2: Ask for Farm Location
-    echo "CON Please enter your Farm Location:";
+    echo "CON Please enter your Farm Location:(E.g., Nairobi, Kenya):";
 
 } else if ($level == 3 && $textArray[0] == "1") {
     // Level 3: Ask for Farm Size
