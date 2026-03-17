@@ -40,7 +40,7 @@ if ($level == 0) {
 
 } else if ($level == 4 && $textArray[0] == "1") {
     // Level 4: Ask for Type of Crops
-    echo "CON Please enter the Type of Crops you grow:";
+    echo "CON Please enter the Type of Crops you grow:(E.g., Maize, Beans):";
 
 } else if ($level == 5 && $textArray[0] == "1") {
     // Level 5: Ask for Email Address
