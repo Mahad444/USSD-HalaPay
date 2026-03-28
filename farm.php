@@ -44,7 +44,7 @@ if ($level == 0) {
 
 } else if ($level == 5 && $textArray[0] == "1") {
     // Level 5: Ask for Email Address
-    echo "CON Please enter your Email Address:";
+    echo "CON Please enter your Email Address: e.g john@example.com";
 
 } else if ($level == 6 && $textArray[0] == "1") {
     // Level 6: Ask for PIN
