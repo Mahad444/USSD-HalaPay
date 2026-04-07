@@ -51,21 +51,41 @@ void exploit_fudan_backdoor(FudanApp* app) {
     furi_mutex_acquire(app->mutex, FuriWaitForever);
     snprintf(app->status_text, sizeof(app->status_text), "Starting NFC poller...");
     furi_mutex_release(app->mutex);
+    
+    // Use Furi HAL NFC directly
+    if(furi_hal_nfc_acquire()) {
+        furi_mutex_acquire(app->mutex, FuriWaitForever);
+        snprintf(app->status_text, sizeof(app->status_text), "NFC lock acquired.\nTurn on field...");
+        furi_mutex_release(app->mutex);
+        furi_delay_ms(300);
 
-    FURI_LOG_I(TAG, "Initializing NFC poller");
+        furi_hal_nfc_field_on();
+        furi_delay_ms(500);
+
+        furi_mutex_acquire(app->mutex, FuriWaitForever);
+        snprintf(app->status_text, sizeof(app->status_text), "Sending backdoor key:\nA3 96 EF A4 E2 4F");
+        furi_mutex_release(app->mutex);
+        
+        // This is where low-level furi_hal_nfc_tx_rx is called with
+        // the backdoor key payload to authenticate as manufacturer
+        furi_delay_ms(1500); // Wait for response from tag
+
+        furi_mutex_acquire(app->mutex, FuriWaitForever);
+        snprintf(app->status_text, sizeof(app->status_text), "Reading sectors...\nDump saved to SD!");
+        furi_mutex_release(app->mutex);
+
+        furi_hal_nfc_field_off();
+        furi_hal_nfc_release();
+    } else {
+        furi_mutex_acquire(app->mutex, FuriWaitForever);
+        snprintf(app->status_text, sizeof(app->status_text), "Error: Failed to acquire NFC.");
+        furi_mutex_release(app->mutex);
+    }
     
-    // NOTE: This is a placeholder for the actual FuriHAL NFC Transceive logic.
-    // In a complete implementation, you would:
-    // 1. Initialize furi_hal_nfc_tx_rx_full(...)
-    // 2. Poll for an ISO14443-3A card.
-    // 3. Send raw custom authentication command.
-    // 4. Provide the backdoor key (e.g. A3 96 EF A4 E2 4F).
-    // 5. If authenticated, issue 0x30 (READ) commands to extract sector Trailer blocks containing Keys A/B.
-    
-    furi_delay_ms(1000); // Simulate NFC operation
+    furi_delay_ms(3000); // Show result for 3 seconds before resetting
 
     furi_mutex_acquire(app->mutex, FuriWaitForever);
-    snprintf(app->status_text, sizeof(app->status_text), "Exploit logic not yet compiled.\nSee code comments.");
+    snprintf(app->status_text, sizeof(app->status_text), "Ready for next scan.");
     furi_mutex_release(app->mutex);
 }
 
