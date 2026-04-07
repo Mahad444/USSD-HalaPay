@@ -6,6 +6,8 @@
 #include <nfc/nfc_poller.h>
 #include <nfc/protocols/iso14443_3a/iso14443_3a_poller.h>
 #include <bit_lib/bit_lib.h>
+#include <storage/storage.h>
+#include <furi_hal_nfc.h>
 
 #define TAG "FudanBackdoor"
 
@@ -75,10 +77,17 @@ void exploit_fudan_backdoor(FudanApp* app) {
         File* file = storage_file_alloc(storage);
         
         // Standard path for Flipper NFC dicts
-        if(storage_file_open(file, EXT_PATH("nfc/assets/mf_classic_dict_user.txt"), FSAM_WRITE | FSAM_OPEN_APPEND, FSOM_OPEN_ALWAYS)) {
+        if(storage_file_open(file, EXT_PATH("nfc/assets/mf_classic_dict_user.txt"), FSAM_WRITE, FSOM_OPEN_APPEND)) {
             // Append backdoor keys
             storage_file_write(file, "\nA396EFA4E24F", 13);
             storage_file_write(file, "\nA31667A8CEC1", 13);
+            storage_file_close(file);
+            
+            furi_mutex_acquire(app->mutex, FuriWaitForever);
+            snprintf(app->status_text, sizeof(app->status_text), "Backdoor keys saved to:\nmf_classic_dict_user.txt");
+            furi_mutex_release(app->mutex);
+        } else if(storage_file_open(file, EXT_PATH("nfc/assets/mf_classic_dict_user.txt"), FSAM_WRITE, FSOM_OPEN_ALWAYS)) {
+            storage_file_write(file, "A396EFA4E24F\nA31667A8CEC1", 25);
             storage_file_close(file);
             
             furi_mutex_acquire(app->mutex, FuriWaitForever);
