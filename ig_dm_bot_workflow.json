@@ -1,0 +1,153 @@
+{
+  "name": "Instagram DM AI Bot (n8n + ManyChat)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "ig-dm-webhook",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "id": "e93dcd3e-9bf4-40fe-85f8-2c208c1d1a8e",
+      "name": "ManyChat Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1.1,
+      "position": [
+        400,
+        300
+      ],
+      "webhookId": "12345678-abcd-efgh-ijkl-1234567890ab"
+    },
+    {
+      "parameters": {
+        "text": "={{ $json.body.message }}",
+        "options": {
+          "systemMessage": "You are a helpful assistant handling Instagram DMs. Keep your responses short, friendly, and engaging. Qualify the leads based on their questions. Do not use markdown."
+        }
+      },
+      "id": "b3f305b3-3669-42b7-a3af-ec85ad05cca4",
+      "name": "AI Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.1,
+      "position": [
+        660,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "model": "gpt-4o-mini",
+        "options": {}
+      },
+      "id": "0bfd7554-15c4-4b47-ba42-e61ef0a40f80",
+      "name": "OpenAI Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1,
+      "position": [
+        640,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "sessionId": "={{ $json.body.subscriber_id }}"
+      },
+      "id": "41a1ab55-7ca9-411a-a1b4-b420f1df215d",
+      "name": "Window Buffer Memory",
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1,
+      "position": [
+        780,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.manychat.com/fb/sending/sendContent",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer YOUR_MANYCHAT_API_KEY"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "subscriber_id",
+              "value": "={{ $('ManyChat Webhook').item.json.body.subscriber_id }}"
+            },
+            {
+              "name": "data",
+              "value": "={{ { \"version\": \"v2\", \"content\": { \"messages\": [ { \"type\": \"text\", \"text\": $json.output } ] } } }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "c1f721d6-4448-4cb2-9de8-1e4e6c99c3be",
+      "name": "Send Reply via ManyChat",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        1000,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "ManyChat Webhook": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Send Reply via ManyChat",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Window Buffer Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "1"
+}
