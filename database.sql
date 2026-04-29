@@ -1,0 +1,67 @@
+-- Database schema for USSD project
+
+CREATE DATABASE IF NOT EXISTS ussd_app CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE ussd_app;
+
+CREATE TABLE IF NOT EXISTS users (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    phone_number VARCHAR(20) NOT NULL UNIQUE,
+    first_name VARCHAR(100),
+    last_name VARCHAR(100),
+    email VARCHAR(255),
+    status ENUM('active','inactive') NOT NULL DEFAULT 'active',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS ussd_sessions (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    session_id VARCHAR(100) NOT NULL,
+    phone_number VARCHAR(20) NOT NULL,
+    service_code VARCHAR(20),
+    text TEXT,
+    current_level VARCHAR(100),
+    is_active TINYINT(1) NOT NULL DEFAULT 1,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    INDEX idx_phone_number (phone_number),
+    INDEX idx_session_id (session_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS ussd_menu (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    code VARCHAR(50) NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    prompt TEXT NOT NULL,
+    parent_id INT UNSIGNED DEFAULT NULL,
+    menu_order INT UNSIGNED DEFAULT 0,
+    menu_type ENUM('menu','input','confirm','action') NOT NULL DEFAULT 'menu',
+    active TINYINT(1) NOT NULL DEFAULT 1,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (parent_id) REFERENCES ussd_menu(id) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS transactions (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    user_id INT UNSIGNED NOT NULL,
+    session_id INT UNSIGNED,
+    transaction_type VARCHAR(100) NOT NULL,
+    amount DECIMAL(15,2) DEFAULT 0,
+    status ENUM('pending','completed','failed') NOT NULL DEFAULT 'pending',
+    metadata JSON,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (session_id) REFERENCES ussd_sessions(id) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS ussd_logs (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    session_id INT UNSIGNED,
+    event_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    request_text TEXT,
+    response_text TEXT,
+    status VARCHAR(50),
+    FOREIGN KEY (session_id) REFERENCES ussd_sessions(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
